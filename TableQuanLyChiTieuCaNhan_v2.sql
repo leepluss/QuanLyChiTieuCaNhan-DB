@@ -1,29 +1,19 @@
--- ====================================================================
--- 0. DỌN DẸP & LÀM SẠCH (CHẠY NHIỀU LẦN KHÔNG BỊ LỖI)
--- ====================================================================
 USE master;
 GO
 
 IF DB_ID('QuanLyChiTieuCaNhan') IS NOT NULL
 BEGIN
-    -- Ép ngắt kết nối các session đang dùng database này và xóa nó
     ALTER DATABASE QuanLyChiTieuCaNhan SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE QuanLyChiTieuCaNhan;
 END
 GO
 
--- ====================================================================
--- 1. TẠO CƠ SỞ DỮ LIỆU
--- ====================================================================
 CREATE DATABASE QuanLyChiTieuCaNhan;
 GO
 
 USE QuanLyChiTieuCaNhan;
 GO
 
--- ====================================================================
--- 2. TẠO CÁC SEQUENCE ĐỂ TĂNG TỰ ĐỘNG ID
--- ====================================================================
 CREATE SEQUENCE Seq_NguoiDung START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE Seq_ViTien START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE Seq_DanhMuc START WITH 1 INCREMENT BY 1;
@@ -33,11 +23,7 @@ CREATE SEQUENCE Seq_MucTieuTaiChinh START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE Seq_BaoCaoTaiChinh START WITH 1 INCREMENT BY 1;
 GO
 
--- ====================================================================
--- 3. TẠO BẢNG & RÀNG BUỘC (TABLES & CONSTRAINTS)
--- ====================================================================
 
--- 3.1 Bảng NguoiDung
 CREATE TABLE NguoiDung (
     NguoiDung_ID varchar(10) PRIMARY KEY,
     Ten_TK varchar(100) UNIQUE,
@@ -52,7 +38,6 @@ ADD CONSTRAINT Auto_NguoiDung_ID
 DEFAULT ('ND' + FORMAT((NEXT VALUE FOR Seq_NguoiDung), '00')) FOR NguoiDung_ID;
 GO
 
--- 3.2 Bảng NguoiDung_SDT
 CREATE TABLE NguoiDung_SDT (
     NguoiDung_ID varchar(10),
     SDT varchar(15),
@@ -61,7 +46,6 @@ CREATE TABLE NguoiDung_SDT (
 );
 GO
 
--- 3.3 Bảng ViTien
 CREATE TABLE ViTien (
     Vi_ID varchar(10) PRIMARY KEY,
     Ten_vi varchar(50) NOT NULL,
@@ -77,7 +61,6 @@ ADD CONSTRAINT Auto_Vi_ID
 DEFAULT ('Vi' + FORMAT((NEXT VALUE FOR Seq_ViTien), '00')) FOR Vi_ID;
 GO
 
--- 3.4 Bảng DanhMuc
 CREATE TABLE DanhMuc (
     DanhMuc_ID varchar(10) PRIMARY KEY,
     Ten_danh_muc varchar(50) NOT NULL,
@@ -90,28 +73,24 @@ ADD CONSTRAINT Auto_DanhMuc_ID
 DEFAULT ('DM' + FORMAT((NEXT VALUE FOR Seq_DanhMuc), '00')) FOR DanhMuc_ID;
 GO
 
--- 3.5 Bảng ChiTieu
 CREATE TABLE ChiTieu (
     ChiTieu_ID varchar(10) PRIMARY KEY,
     FOREIGN KEY (ChiTieu_ID) REFERENCES DanhMuc (DanhMuc_ID)
 );
 GO
 
--- 3.6 Bảng ThuNhap
 CREATE TABLE ThuNhap (
     ThuNhap_ID varchar(10) PRIMARY KEY,
     FOREIGN KEY (ThuNhap_ID) REFERENCES DanhMuc (DanhMuc_ID)
 );
 GO
 
--- 3.7 Bảng TaiChinhDaiHan
 CREATE TABLE TaiChinhDaiHan (
     TaiChinhDaiHan_ID varchar(10) PRIMARY KEY,
     FOREIGN KEY (TaiChinhDaiHan_ID) REFERENCES DanhMuc (DanhMuc_ID)
 );
 GO
 
--- 3.8 Bảng GiaoDich
 CREATE TABLE GiaoDich (
     GiaoDich_ID varchar(10) PRIMARY KEY,
     Ten_giao_dich varchar(100) NOT NULL,
@@ -131,7 +110,6 @@ ADD CONSTRAINT Auto_GiaoDich_ID
 DEFAULT ('GD' + FORMAT((NEXT VALUE FOR Seq_GiaoDich), '00')) FOR GiaoDich_ID;
 GO
 
--- 3.9 Bảng NganSach
 CREATE TABLE NganSach (
     NganSach_ID varchar(10) PRIMARY KEY,
     Ten_ngan_sach varchar(100) NOT NULL,
@@ -149,7 +127,6 @@ ADD CONSTRAINT Auto_NganSach_ID
 DEFAULT ('NS' + FORMAT((NEXT VALUE FOR Seq_NganSach), '00')) FOR NganSach_ID;
 GO
 
--- 3.10 Bảng MucTieuTaiChinh
 CREATE TABLE MucTieuTaiChinh (
     MucTieu_ID varchar(10) PRIMARY KEY,
     Ten_muc_tieu varchar(100) NOT NULL,
@@ -166,7 +143,6 @@ ADD CONSTRAINT Auto_MucTieu_ID
 DEFAULT ('MT' + FORMAT((NEXT VALUE FOR Seq_MucTieuTaiChinh), '00')) FOR MucTieu_ID;
 GO
 
--- 3.11 Bảng BaoCaoTaiChinh
 CREATE TABLE BaoCaoTaiChinh (
     BaoCao_ID varchar(10) PRIMARY KEY,
     Ten_bao_cao varchar(100) NOT NULL,
@@ -182,11 +158,7 @@ ADD CONSTRAINT Auto_BaoCao_ID
 DEFAULT ('BC' + FORMAT((NEXT VALUE FOR Seq_BaoCaoTaiChinh), '00')) FOR BaoCao_ID;
 GO
 
--- ====================================================================
--- 4. THÊM DỮ LIỆU (INSERT DATA)
--- ====================================================================
 
--- 4.1 Thêm dữ liệu NguoiDung
 INSERT INTO NguoiDung (Ten_TK, Email, Mat_khau, Vai_tro) VALUES
 ('nguyenhoang', 'nguyenhoang@gmail.com', 'hoang123', 'user'),
 ('lethanh', 'lethanh@outlook.com', 'thanh456', 'admin'),
@@ -205,7 +177,6 @@ INSERT INTO NguoiDung (Ten_TK, Email, Mat_khau, Vai_tro) VALUES
 ('hoangtuan', 'hoangtuan@gmail.com', 'tuan123', 'user');
 GO
 
--- 4.2 Thêm dữ liệu NguoiDung_SDT
 INSERT INTO NguoiDung_SDT (NguoiDung_ID, SDT) VALUES
 ('ND03', '0901234567'), ('ND03', '0912345678'), ('ND06', '0923456789'), 
 ('ND06', '0934567890'), ('ND09', '0945678901'), ('ND09', '0956789012'), 
@@ -216,7 +187,6 @@ INSERT INTO NguoiDung_SDT (NguoiDung_ID, SDT) VALUES
 ('ND15', '0990123456');
 GO
 
--- 4.3 Thêm dữ liệu ViTien
 INSERT INTO ViTien (Ten_vi, Loai_vi, So_du_hien_tai, Ngay_tao, ID_nguoi_dung) VALUES
 ('Agribank', 'The vat ly', 22800000, '2023-09-01', 'ND01'),
 ('BIDV', 'The vat ly', 13420000, '2022-05-15', 'ND02'),
@@ -235,7 +205,6 @@ INSERT INTO ViTien (Ten_vi, Loai_vi, So_du_hien_tai, Ngay_tao, ID_nguoi_dung) VA
 ('Tien mat', 'Tien mat', 4400000, '2024-09-27', 'ND15');
 GO
 
--- 4.4 Thêm dữ liệu DanhMuc
 INSERT INTO DanhMuc (Ten_danh_muc, Loai_danh_muc, Mo_ta) VALUES
 ('Cho, sieu thi', 'Sinh hoat', 'Chi phi cho viec mua sam tai cho hoac sieu thi'),
 ('An uong', 'Sinh hoat', 'Chi phi lien quan den an uong hang ngay'),
@@ -258,7 +227,6 @@ INSERT INTO DanhMuc (Ten_danh_muc, Loai_danh_muc, Mo_ta) VALUES
 ('Kinh doanh', 'Ca nhan', 'Thu nhap tu hoat dong kinh doanh, dau tu, ban hang');
 GO
 
--- 4.5 Thêm dữ liệu Phân loại Danh Mục (ChiTieu, ThuNhap, TaiChinhDaiHan)
 INSERT INTO ChiTieu (ChiTieu_ID)
 SELECT DanhMuc_ID FROM DanhMuc 
 WHERE (Loai_danh_muc = 'Sinh hoat' AND Ten_danh_muc IN ('Cho, sieu thi', 'An uong', 'Di chuyen'))
@@ -279,9 +247,7 @@ WHERE (Loai_danh_muc = 'Dau tu' AND Ten_danh_muc IN ('Hoc tap', 'Nha dat', 'Vang
    OR (Loai_danh_muc = 'Tiet kiem' AND Ten_danh_muc = 'Ngan hang');
 GO
 
--- 4.6 Thêm dữ liệu GiaoDich
 INSERT INTO GiaoDich (Ten_giao_dich, So_tien, Ngay_giao_dich, Ghi_chu, ID_nguoi_dung, ID_danh_muc, ID_vi_tien) VALUES
--- Chi tiêu
 ('Mua sam tai sieu thi', 500000, '2025-04-01', 'Mua thuc pham', 'ND01', 'DM01', 'Vi01'),
 ('Chi phi an uong', 200000, '2025-04-02', 'An trua tai nha hang', 'ND02', 'DM02', 'Vi02'),
 ('Ve xe buyt', 15000, '2025-04-03', 'Di chuyen di lam', 'ND03', 'DM03', 'Vi03'),
@@ -311,7 +277,6 @@ INSERT INTO GiaoDich (Ten_giao_dich, So_tien, Ngay_giao_dich, Ghi_chu, ID_nguoi_
 ('Luong thang', 10000000, '2025-04-11', 'Luong cong ty', 'ND11', 'DM16', 'Vi11');
 GO
 
--- 4.7 Thêm dữ liệu NganSach
 INSERT INTO NganSach (Ten_ngan_sach, So_tien_gioi_han, ID_nguoi_dung, ID_danh_muc) VALUES
 ('Di cho', 2200000, 'ND01', 'DM01'),
 ('An uong', 1700000, 'ND06', 'DM02'),
@@ -330,7 +295,6 @@ INSERT INTO NganSach (Ten_ngan_sach, So_tien_gioi_han, ID_nguoi_dung, ID_danh_mu
 ('Kinh doanh online', 5500000, 'ND05', 'DM13');
 GO
 
--- 4.8 Thêm dữ liệu MucTieuTaiChinh
 INSERT INTO MucTieuTaiChinh (Ten_muc_tieu, So_tien_can_dat, Thoi_han_hoan_thanh, ID_nguoi_dung) VALUES
 ('Tiet kiem cho ky nghi', 5000000, '2025-07-01', 'ND15'),
 ('Mua o to', 30000000, '2025-12-01', 'ND03'),
@@ -349,7 +313,6 @@ INSERT INTO MucTieuTaiChinh (Ten_muc_tieu, So_tien_can_dat, Thoi_han_hoan_thanh,
 ('Kham pha am thuc', 5000000, '2025-06-01', 'ND12');
 GO
 
--- 4.9 Thêm dữ liệu BaoCaoTaiChinh
 WITH BaoCao AS (
     SELECT 
         G.ID_nguoi_dung,
@@ -370,11 +333,7 @@ SELECT
 FROM BaoCao;
 GO
 
--- ====================================================================
--- 5. TẠO TRIGGER (CẬP NHẬT SỐ DƯ & NGÂN SÁCH)
--- ====================================================================
 
--- 5.1 Trigger cập nhật số dư ví tiền
 CREATE TRIGGER trg_CapNhatSoDuVi
 ON GiaoDich
 AFTER INSERT
@@ -382,28 +341,24 @@ AS
 BEGIN
     SET NOCOUNT ON;
     
-    -- Cập nhật trừ tiền với ChiTieu
     UPDATE V
     SET V.So_du_hien_tai = V.So_du_hien_tai - I.So_tien
     FROM ViTien V
     INNER JOIN INSERTED I ON V.Vi_ID = I.ID_vi_tien
     INNER JOIN ChiTieu CT ON I.ID_danh_muc = CT.ChiTieu_ID;
 
-    -- Cập nhật trừ tiền với TaiChinhDaiHan
     UPDATE V
     SET V.So_du_hien_tai = V.So_du_hien_tai - I.So_tien
     FROM ViTien V
     INNER JOIN INSERTED I ON V.Vi_ID = I.ID_vi_tien
     INNER JOIN TaiChinhDaiHan TCDH ON I.ID_danh_muc = TCDH.TaiChinhDaiHan_ID;
 
-    -- Cập nhật cộng tiền với ThuNhap
     UPDATE V
     SET V.So_du_hien_tai = V.So_du_hien_tai + I.So_tien
     FROM ViTien V
     INNER JOIN INSERTED I ON V.Vi_ID = I.ID_vi_tien
     INNER JOIN ThuNhap TN ON I.ID_danh_muc = TN.ThuNhap_ID;
 
-    -- Kiểm tra nếu ví âm thì rollback
     IF EXISTS (
         SELECT 1
         FROM ViTien V
@@ -417,7 +372,6 @@ BEGIN
 END;
 GO
 
--- 5.2 Trigger cập nhật số dư ngân sách
 CREATE TRIGGER trg_CapNhatNgansach
 ON GiaoDich
 AFTER INSERT
@@ -443,9 +397,6 @@ BEGIN
 END;
 GO
 
--- ====================================================================
--- 6. TẠO CÁC VIEW DÀNH CHO USER (CHỈ XEM DỮ LIỆU CÁ NHÂN)
--- ====================================================================
 
 CREATE VIEW v_NguoiDung_User AS
 SELECT * FROM NguoiDung WHERE Ten_TK = USER_NAME();
@@ -493,16 +444,12 @@ JOIN NguoiDung ON NguoiDung.NguoiDung_ID = BaoCaoTaiChinh.ID_nguoi_dung
 WHERE NguoiDung.Ten_TK = USER_NAME();
 GO
 
--- ====================================================================
--- 7. TẠO STORED PROCEDURE KHỞI TẠO LOGIN VÀ USER
--- ====================================================================
 
 CREATE PROCEDURE sp_TaoLoginVaUser
 AS
 BEGIN
     DECLARE @Ten_TK NVARCHAR(100), @Mat_khau NVARCHAR(100), @Vai_tro NVARCHAR(50), @SQL NVARCHAR(MAX);
     
-    -- Tạo role nếu chưa có
     IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_user')
         CREATE ROLE db_user;
     
@@ -517,21 +464,18 @@ BEGIN
     
     WHILE @@FETCH_STATUS = 0
     BEGIN
-        -- Tạo LOGIN nếu chưa có
         IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = @Ten_TK)
         BEGIN
             SET @SQL = 'CREATE LOGIN [' + @Ten_TK + '] WITH PASSWORD = N''' + @Mat_khau + ''';';
             EXEC sp_executesql @SQL;
         END
         
-        -- Tạo USER nếu chưa có
         IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = @Ten_TK)
         BEGIN
             SET @SQL = 'CREATE USER [' + @Ten_TK + '] FOR LOGIN [' + @Ten_TK + '];';
             EXEC sp_executesql @SQL;
         END
         
-        -- Gán role
         IF @Vai_tro = 'admin'
             EXEC sp_addrolemember 'db_admin', @Ten_TK;
         ELSE
@@ -545,15 +489,10 @@ BEGIN
 END;
 GO
 
--- Khởi chạy Procedure để tạo tự động các Logins / Users
 EXEC sp_TaoLoginVaUser;
 GO
 
--- ====================================================================
--- 8. CẤP QUYỀN (GRANT PERMISSIONS) THEO ROLES
--- ====================================================================
 
--- Cấp quyền cho db_user (Chỉ truy cập thông qua các View cá nhân)
 GRANT SELECT, INSERT, UPDATE, DELETE ON v_NguoiDung_User TO db_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON v_NguoiDung_SDT_User TO db_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON v_ViTien_User TO db_user;
@@ -563,7 +502,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON v_MucTieuTaiChinh_User TO db_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON v_BaoCaoTaiChinh_User TO db_user;
 GO
 
--- Cấp quyền cho db_admin (Có toàn quyền CRUD lên các bảng gốc)
 GRANT SELECT, INSERT, UPDATE, DELETE ON NguoiDung TO db_admin;
 GRANT SELECT, INSERT, UPDATE, DELETE ON NguoiDung_SDT TO db_admin;
 GRANT SELECT, INSERT, UPDATE, DELETE ON DanhMuc TO db_admin;
